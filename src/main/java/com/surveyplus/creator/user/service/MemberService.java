@@ -47,19 +47,19 @@ public class MemberService {
         }
 
         // 4. 저장
-        Member savedUser = memberRepository.save(member);
+        Member savedMember = memberRepository.save(member);
 
-        return MemberResponse.from(savedUser);
+        return MemberResponse.from(savedMember);
     }
 
     public TokenDto login(LoginRequest loginRequest) {
         // 1. 사용자 조회 (존재하지 않으면 예외 발생)
         Member member = memberRepository.findByEmail(loginRequest.getEmail())
-                .orElseThrow(() -> new MemberException(MemberErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         // 2. 비밀번호 일치 확인 (암호화된 비밀번호와 입력값 비교)
         if (!passwordEncoder.matches(loginRequest.getPassword(), member.getPassword())) {
-            throw new MemberException(MemberErrorCode.USER_NOT_FOUND);
+            throw new MemberException(MemberErrorCode.MEMBER_NOT_FOUND);
         }
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(

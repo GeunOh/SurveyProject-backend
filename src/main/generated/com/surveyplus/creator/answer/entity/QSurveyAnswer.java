@@ -10,14 +10,14 @@ import com.querydsl.core.types.Path;
 
 
 /**
- * QResponseAnswer is a Querydsl query type for ResponseAnswer
+ * QSurveyAnswer is a Querydsl query type for SurveyAnswer
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QResponseAnswer extends EntityPathBase<ResponseAnswer> {
+public class QSurveyAnswer extends EntityPathBase<SurveyAnswer> {
 
-    private static final long serialVersionUID = -823664503L;
+    private static final long serialVersionUID = 1357725538L;
 
-    public static final QResponseAnswer responseAnswer = new QResponseAnswer("responseAnswer");
+    public static final QSurveyAnswer surveyAnswer = new QSurveyAnswer("surveyAnswer");
 
     public final StringPath answerId = createString("answerId");
 
@@ -35,16 +35,16 @@ public class QResponseAnswer extends EntityPathBase<ResponseAnswer> {
 
     public final DateTimePath<java.time.LocalDateTime> startedAt = createDateTime("startedAt", java.time.LocalDateTime.class);
 
-    public QResponseAnswer(String variable) {
-        super(ResponseAnswer.class, forVariable(variable));
+    public QSurveyAnswer(String variable) {
+        super(SurveyAnswer.class, forVariable(variable));
     }
 
-    public QResponseAnswer(Path<? extends ResponseAnswer> path) {
+    public QSurveyAnswer(Path<? extends SurveyAnswer> path) {
         super(path.getType(), path.getMetadata());
     }
 
-    public QResponseAnswer(PathMetadata metadata) {
-        super(ResponseAnswer.class, metadata);
+    public QSurveyAnswer(PathMetadata metadata) {
+        super(SurveyAnswer.class, metadata);
     }
 
 }

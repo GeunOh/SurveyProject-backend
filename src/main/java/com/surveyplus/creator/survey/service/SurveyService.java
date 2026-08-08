@@ -205,12 +205,12 @@ public class SurveyService {
         log.info("[설문 수정 - 질문 업데이트 완료] surveyId={}", survey.getId());
     }
 
-    private void updateChoices(Question question, List<QuestionChoiceRequest> choiceRequests) {
+    private void updateChoices(Question question, List<ChoiceRequest> choiceRequests) {
         if (choiceRequests == null) return;
 
         // 요청으로 들어온 보기 ID 집합 추출
         Set<Long> requestChoiceIds = choiceRequests.stream()
-                .map(QuestionChoiceRequest::getId)
+                .map(ChoiceRequest::getId)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
 
@@ -231,7 +231,7 @@ public class SurveyService {
         question.getChoices().removeIf(c -> !requestChoiceIds.contains(c.getId()));
 
         // [수정 및 추가]
-        for (QuestionChoiceRequest cReq : choiceRequests) {
+        for (ChoiceRequest cReq : choiceRequests) {
             if (cReq.getId() != null) {
                 // [수정] 기존 보기 조회
                 Choice existingChoice = question.getChoices().stream()

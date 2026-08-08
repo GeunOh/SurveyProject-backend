@@ -1,6 +1,6 @@
 package com.surveyplus.creator.survey.entity;
 
-import com.surveyplus.creator.answer.dto.response.AnswerResponse;
+import com.surveyplus.creator.answer.dto.response.SurveyAnswerResponse;
 import com.surveyplus.creator.answer.dto.response.QuestionDetailResponse;
 import com.surveyplus.creator.survey.dto.response.ChoiceResponse;
 import com.surveyplus.creator.survey.dto.response.QuestionResponse;
@@ -66,7 +66,7 @@ public class Question {
                 .build();
     }
 
-    public QuestionDetailResponse fromDetail(int estimatedTime, List<AnswerResponse> savedAnswers) {
+    public QuestionDetailResponse fromDetail(int estimatedTime, List<SurveyAnswerResponse> savedAnswers) {
         List<ChoiceResponse> choiceResponses = this.choices.stream()
                 .map(Choice::from)
                 .collect(Collectors.toList());

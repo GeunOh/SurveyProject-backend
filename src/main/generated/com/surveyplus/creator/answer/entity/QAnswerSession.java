@@ -10,14 +10,14 @@ import com.querydsl.core.types.Path;
 
 
 /**
- * QResponseStatus is a Querydsl query type for ResponseStatus
+ * QAnswerSession is a Querydsl query type for AnswerSession
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QResponseStatus extends EntityPathBase<ResponseStatus> {
+public class QAnswerSession extends EntityPathBase<AnswerSession> {
 
-    private static final long serialVersionUID = -303337283L;
+    private static final long serialVersionUID = 746677902L;
 
-    public static final QResponseStatus responseStatus1 = new QResponseStatus("responseStatus1");
+    public static final QAnswerSession answerSession = new QAnswerSession("answerSession");
 
     public final StringPath answerId = createString("answerId");
 
@@ -29,24 +29,24 @@ public class QResponseStatus extends EntityPathBase<ResponseStatus> {
 
     public final NumberPath<Long> questionId = createNumber("questionId", Long.class);
 
-    public final StringPath responseStatus = createString("responseStatus");
-
     public final DateTimePath<java.time.LocalDateTime> startedAt = createDateTime("startedAt", java.time.LocalDateTime.class);
+
+    public final StringPath status = createString("status");
 
     public final NumberPath<Long> surveyId = createNumber("surveyId", Long.class);
 
     public final EnumPath<com.surveyplus.creator.answer.enums.SurveyAnswerType> surveyType = createEnum("surveyType", com.surveyplus.creator.answer.enums.SurveyAnswerType.class);
 
-    public QResponseStatus(String variable) {
-        super(ResponseStatus.class, forVariable(variable));
+    public QAnswerSession(String variable) {
+        super(AnswerSession.class, forVariable(variable));
     }
 
-    public QResponseStatus(Path<? extends ResponseStatus> path) {
+    public QAnswerSession(Path<? extends AnswerSession> path) {
         super(path.getType(), path.getMetadata());
     }
 
-    public QResponseStatus(PathMetadata metadata) {
-        super(ResponseStatus.class, metadata);
+    public QAnswerSession(PathMetadata metadata) {
+        super(AnswerSession.class, metadata);
     }
 
 }

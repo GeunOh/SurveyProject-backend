@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AnswerResponse {
+public class SurveyAnswerResponse {
     private Long id;
     private String answerId;
     private Long questionId;

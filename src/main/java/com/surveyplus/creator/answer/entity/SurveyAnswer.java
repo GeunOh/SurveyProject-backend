@@ -1,6 +1,6 @@
 package com.surveyplus.creator.answer.entity;
 
-import com.surveyplus.creator.answer.dto.response.AnswerResponse;
+import com.surveyplus.creator.answer.dto.response.SurveyAnswerResponse;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResponseAnswer {
+public class SurveyAnswer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,8 +55,8 @@ public class ResponseAnswer {
         this.answerText = answerText;
     }
 
-    public AnswerResponse from() {
-        return AnswerResponse.builder()
+    public SurveyAnswerResponse from() {
+        return SurveyAnswerResponse.builder()
                 .id(this.id)
                 .answerId(this.answerId)
                 .questionId(this.questionId)

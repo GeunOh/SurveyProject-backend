@@ -14,7 +14,7 @@ import java.util.List;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class QuestionChoiceRequest {
+public class ChoiceRequest {
 
     private Long id;
 

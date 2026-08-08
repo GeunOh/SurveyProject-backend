@@ -13,12 +13,12 @@ public class MemberResponse {
     private String nickname;
     private String provider;
 
-    public static MemberResponse from(Member user) {
+    public static MemberResponse from(Member member) {
         return MemberResponse.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .nickname(user.getNickname())
-                .provider(user.getProvider())
+                .id(member.getId())
+                .email(member.getEmail())
+                .nickname(member.getNickname())
+                .provider(member.getProvider())
                 .build();
     }
 }

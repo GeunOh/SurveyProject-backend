@@ -33,7 +33,7 @@ public class SurveyQuestionRequest {
     private Boolean required;
 
     @Valid
-    private List<QuestionChoiceRequest> choices;
+    private List<ChoiceRequest> choices;
 
     public Question toEntity() {
         Question question = Question.builder()
@@ -46,7 +46,7 @@ public class SurveyQuestionRequest {
 
         if (this.choices != null) {
             List<Choice> choices = this.choices.stream()
-                    .map(QuestionChoiceRequest::toEntity)
+                    .map(ChoiceRequest::toEntity)
                     .peek(choice -> choice.assignQuestion(question))
                     .toList();
             question.getChoices().addAll(choices);

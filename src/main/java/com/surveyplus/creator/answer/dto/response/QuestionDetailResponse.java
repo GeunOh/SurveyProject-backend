@@ -18,6 +18,6 @@ public class QuestionDetailResponse {
     private int order;                    // 문항 순서
     private int estimatedTime;            // 남은 예상 소요 시간 (초)
     private List<ChoiceResponse> choices; // 보기 목록
-    private List<AnswerResponse> answers; // 응답 목록
+    private List<SurveyAnswerResponse> answers; // 응답 목록
 
 }

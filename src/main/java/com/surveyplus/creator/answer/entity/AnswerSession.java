@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class ResponseStatus {
+public class AnswerSession {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,7 +44,7 @@ public class ResponseStatus {
 
     @Builder.Default
     @Column(name = "response_status", length = 20)
-    private String responseStatus = "PROGRESS";
+    private String status = "PROGRESS";
 
     @CreationTimestamp
     @Column(name = "started_at", nullable = false, updatable = false)
@@ -69,7 +69,7 @@ public class ResponseStatus {
     }
     // 설문 최종 제출 시 상태 변경 메서드
     public void complete() {
-        this.responseStatus = "COMPLETED";
+        this.status = "COMPLETED";
         this.endedAt = LocalDateTime.now();
     }
 }

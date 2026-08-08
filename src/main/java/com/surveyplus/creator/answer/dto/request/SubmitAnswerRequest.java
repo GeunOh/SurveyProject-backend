@@ -1,6 +1,6 @@
 package com.surveyplus.creator.answer.dto.request;
 
-import com.surveyplus.creator.answer.entity.ResponseAnswer;
+import com.surveyplus.creator.answer.entity.SurveyAnswer;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,12 +18,12 @@ public class SubmitAnswerRequest {
     private String completedAt;
     private List<AnswerItemRequest> answer;
 
-    public List<ResponseAnswer> toEntities() {
+    public List<SurveyAnswer> toEntities() {
         LocalDateTime parsedStartedAt = LocalDateTime.parse(this.startedAt, DateTimeFormatter.ISO_DATE_TIME);
         LocalDateTime parsedCompletedAt = LocalDateTime.parse(this.completedAt, DateTimeFormatter.ISO_DATE_TIME);
 
         return this.answer.stream()
-            .map(item -> ResponseAnswer.builder()
+            .map(item -> SurveyAnswer.builder()
                 .answerId(this.answerId)
                 .questionId(this.questionId)
                 .choiceId(item.getChoiceId())

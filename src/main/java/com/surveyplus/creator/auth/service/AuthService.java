@@ -39,7 +39,7 @@ public class AuthService {
 
         // 3. DB에서 회원 정보 조회
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new MemberException(MemberErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         // 💡 4. 새로운 Access Token만 단독 생성
         String newAccessToken = tokenProvider.createAccessToken(authentication);

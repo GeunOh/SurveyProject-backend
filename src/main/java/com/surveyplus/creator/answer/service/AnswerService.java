@@ -4,12 +4,12 @@ import com.surveyplus.creator.answer.dto.request.QuestionDetailRequest;
 import com.surveyplus.creator.answer.dto.request.SubmitAnswerRequest;
 import com.surveyplus.creator.answer.dto.request.SurveyStartRequest;
 import com.surveyplus.creator.answer.dto.response.*;
-import com.surveyplus.creator.answer.entity.ResponseAnswer;
-import com.surveyplus.creator.answer.entity.ResponseStatus;
+import com.surveyplus.creator.answer.entity.SurveyAnswer;
+import com.surveyplus.creator.answer.entity.AnswerSession;
 import com.surveyplus.creator.answer.exception.AnswerErrorCode;
 import com.surveyplus.creator.answer.exception.AnswerException;
-import com.surveyplus.creator.answer.repository.SurveyResponseAnswerRepository;
-import com.surveyplus.creator.answer.repository.SurveyResponseRepository;
+import com.surveyplus.creator.answer.repository.SurveyAnswerRepository;
+import com.surveyplus.creator.answer.repository.AnswerSessionRepository;
 import com.surveyplus.creator.answer.util.SurveyTimeCalculator;
 import com.surveyplus.creator.survey.entity.Question;
 import com.surveyplus.creator.survey.entity.Survey;
@@ -36,8 +36,8 @@ public class AnswerService {
 
     private final SurveyRepository surveyRepository;
     private final QuestionRepository questionRepository;
-    private final SurveyResponseRepository surveyResponseRepository;
-    private final SurveyResponseAnswerRepository surveyResponseAnswerRepository;
+    private final AnswerSessionRepository answerSessionRepository;
+    private final SurveyAnswerRepository surveyAnswerRepository;
 
     public SurveyIntroResponse getSurveyIntroAndCreateRandomId(Long surveyId) {
         Survey survey = surveyRepository.findById(surveyId)
@@ -63,7 +63,7 @@ public class AnswerService {
                 throw new AnswerException(AnswerErrorCode.SESSION_ID_GENERATE_FAILED);
             }
 
-        } while (surveyResponseRepository.existsBySurveyIdAndAnswerId(surveyId, surveyRandomId));
+        } while (answerSessionRepository.existsBySurveyIdAndAnswerId(surveyId, surveyRandomId));
 
         log.info("설문 인트로 랜덤 ID 생성 완료 - SurveyId: {}, RandomId: {}, 시도 횟수: {}회", surveyId, surveyRandomId, retryCount);
 
@@ -80,14 +80,14 @@ public class AnswerService {
             firstQuestionId = survey.getQuestions().get(0).getId();
         }
 
-        ResponseStatus surveyResponse = surveyStartReq.toEntity();
-        surveyResponse.updateQuestionProgress(null, firstQuestionId);
+        AnswerSession answerSession = surveyStartReq.toEntity();
+        answerSession.updateQuestionProgress(null, firstQuestionId);
 
 
         log.info("설문 응답이 정상적으로 시작되었습니다. SurveyId: {}, AnswerId: {}",
                 surveyStartReq.getSurveyId(), surveyStartReq.getAnswerId());
 
-        return surveyResponseRepository.save(surveyResponse).from();
+        return answerSessionRepository.save(answerSession).from();
     }
 
     public QuestionDetailResponse getQuestionDetail(QuestionDetailRequest questionDetailReq) {
@@ -97,11 +97,11 @@ public class AnswerService {
         Question question = questionRepository.findByIdAndSurveyId(questionDetailReq.getQuestionId(), questionDetailReq.getSurveyId())
                 .orElseThrow(() -> new QuestionException(QuestionErrorCode.QUESTION_NOT_FOUND));
 
-        List<ResponseAnswer> savedAnswers = surveyResponseAnswerRepository
+        List<SurveyAnswer> savedAnswers = surveyAnswerRepository
                 .findByQuestionIdAndAnswerIdAndDeletedAtIsNull(questionDetailReq.getQuestionId(), questionDetailReq.getAnswerId());
 
-        List<AnswerResponse> answerResponses = savedAnswers.stream()
-                .map(ResponseAnswer::from)
+        List<SurveyAnswerResponse> answerResponses = savedAnswers.stream()
+                .map(SurveyAnswer::from)
                 .toList();
 
         int estimatedTime = survey.getQuestions() == null ? 0 :
@@ -121,30 +121,30 @@ public class AnswerService {
         Survey survey = surveyRepository.findByIdWithQuestions(request.getSurveyId())
                 .orElseThrow(() -> new SurveyException(SurveyErrorCode.SURVEY_NOT_FOUND));
 
-        ResponseStatus surveyResponse = surveyResponseRepository
+        AnswerSession answerSession = answerSessionRepository
                 .findBySurveyIdAndAnswerId(request.getSurveyId(), request.getAnswerId())
                 .orElseThrow(() -> new AnswerException(AnswerErrorCode.ANSWER_SESSION_NOT_FOUND));
 
         // 응답 상태가 "PROGRESS"가 아니면 예외 처리 (이미 완료되었거나 중복 제출된 경우)
-        if (!"PROGRESS".equals(surveyResponse.getResponseStatus())) {
+        if (!"PROGRESS".equals(answerSession.getStatus())) {
             throw new SurveyException(SurveyErrorCode.INVALID_SURVEY_STATUS);
         }
 
         // 새로 제출하기 전에, 해당 문항에 남아있던 기존 답변들을 소프트 딜리트 처리
-        surveyResponseAnswerRepository.softDeleteExistingAnswers(request.getAnswerId(), request.getQuestionId(), LocalDateTime.now());
+        surveyAnswerRepository.softDeleteExistingAnswers(request.getAnswerId(), request.getQuestionId(), LocalDateTime.now());
 
         // 제출된 답변 엔티티 변환 및 저장
-        List<ResponseAnswer> answers = request.toEntities();
-        surveyResponseAnswerRepository.saveAll(answers);
+        List<SurveyAnswer> answers = request.toEntities();
+        surveyAnswerRepository.saveAll(answers);
 
         // 다음 문항 정보를 가져오는 메서드
         SubmitAnswerResponse response = findNextQuestionInfo(survey, request.getQuestionId());
 
-        // SurveyResponse 상태 및 진행 문항 업데이트
+        // AnswerSession 상태 및 진행 문항 업데이트
         if (response.isCompleted()) {
-            surveyResponse.complete();
+            answerSession.complete();
         } else {
-            surveyResponse.updateQuestionProgress(request.getQuestionId(), response.getNextQuestionId());
+            answerSession.updateQuestionProgress(request.getQuestionId(), response.getNextQuestionId());
         }
 
         // 그대로 반환
