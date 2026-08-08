@@ -42,7 +42,7 @@ Windows 환경이므로 `gradlew.bat`을 사용한다 (Git Bash에서는 `./grad
 - `auth` — 로그인/토큰 재발급 (`AuthController`, `AuthService`)
 - `user` — 회원가입/회원 (`Member` 엔티티, `MemberController`)
 - `survey` — 설문 생성/조회/수정/삭제, 질문(`Question`)·보기(`Choice`, `ChoiceOption`, `SurveyOption`) 관리. QueryDSL 동적 검색은 `SurveyQueryRepository`/`SurveyQueryRepositoryImpl`에 위치 (`SurveySearchCondition` 기반 페이징 조회)
-- `answer` — 설문 응답 제출/조회 (`ResponseAnswer`, `ResponseStatus`, `AnswerService`). 익명 응답자도 접근 가능한 공개 API
+- `answer` — 설문 응답 제출/조회 (`SurveyAnswer`: 문항별 답변 항목, `AnswerSession`: 응답 진행 세션/상태, `AnswerService`). 익명 응답자도 접근 가능한 공개 API
 - `global` — 도메인 공통 인프라: `config`(Security, QueryDSL, Web), `jwt`, `exception`, `util`
 
 ### 인증/인가 (JWT, Stateless)
