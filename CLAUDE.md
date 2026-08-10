@@ -31,7 +31,7 @@ Windows 환경이므로 `gradlew.bat`을 사용한다 (Git Bash에서는 `./grad
 ```
 
 - QueryDSL이 생성하는 `Q*` 클래스는 `src/main/generated`에 위치한다. 엔티티 필드를 변경했는데 컴파일 에러가 나면 먼저 `clean compileJava`로 재생성부터 의심할 것.
-- 로컬 DB는 MySQL이며 접속 정보는 `src/main/resources/application.properties`에 평문으로 들어있다 (DB `survey`, 포트 3306). 로컬 개발용 자격증명이므로 실제 운영 값이 아닌지 확인 후 다루되, 커밋 시 민감정보 노출에 주의할 것.
+- 로컬 DB는 MySQL이다 (DB `survey`, 포트 3306). DB 계정/비밀번호와 `jwt.secret`은 프로젝트 루트의 `.env`(gitignore 대상, 커밋되지 않음)에서 불러온다. 최초 실행 전 `.env.example`을 복사해 `.env`를 만들고 실제 값을 채워야 한다. `JWT_SECRET`은 `openssl rand -base64 32` 등으로 새로 생성한 값을 쓸 것 — 예시/튜토리얼 문자열을 그대로 쓰지 말 것.
 
 ## 아키텍처
 
