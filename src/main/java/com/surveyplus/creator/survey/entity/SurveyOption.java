@@ -24,10 +24,10 @@ public class SurveyOption {
     private Survey survey;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "settings_key", nullable = false, length = 100)
+    @Column(name = "option_key", nullable = false, length = 100)
     private SurveyOptionKey key;
 
-    @Column(name = "settings_value", nullable = false, columnDefinition = "TEXT")
+    @Column(name = "option_value", nullable = false, columnDefinition = "TEXT")
     private String value;
 
     @Builder.Default

@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table(name = "choice_attribute")
+@Table(name = "choice_option")
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -20,10 +20,10 @@ public class ChoiceOption {
     @JoinColumn(name = "choice_id", nullable = false)
     private Choice choice;
 
-    @Column(name = "attribute_key", nullable = false, length = 50)
+    @Column(name = "option_key", nullable = false, length = 50)
     private String key;
 
-    @Column(name = "attribute_value")
+    @Column(name = "option_value")
     private String value;
 
     public void assignChoice(Choice choice) {
