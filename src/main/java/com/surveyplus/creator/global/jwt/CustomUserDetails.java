@@ -9,6 +9,8 @@ import java.util.Collection;
 @Getter
 public class CustomUserDetails extends User {
 
+    private static final long serialVersionUID = 1L;
+
     private final Long memberId;
 
     public CustomUserDetails(Long memberId, String email, Collection<? extends GrantedAuthority> authorities) {

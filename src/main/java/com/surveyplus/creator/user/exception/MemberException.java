@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MemberException extends RuntimeException {
 
+    private static final long serialVersionUID = 1L;
+
     private final BaseErrorCode errorCode;
 
     @Override

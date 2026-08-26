@@ -50,7 +50,7 @@ public class AnswerSession {
 
     @CreationTimestamp
     @Column(name = "started_at", nullable = false, updatable = false)
-    private LocalDateTime startedAt = LocalDateTime.now();
+    private LocalDateTime startedAt;
 
     @Column(name = "ended_at")
     private LocalDateTime endedAt;
