@@ -31,7 +31,7 @@ public class QAnswerSession extends EntityPathBase<AnswerSession> {
 
     public final DateTimePath<java.time.LocalDateTime> startedAt = createDateTime("startedAt", java.time.LocalDateTime.class);
 
-    public final StringPath status = createString("status");
+    public final EnumPath<com.surveyplus.creator.answer.enums.AnswerStatus> status = createEnum("status", com.surveyplus.creator.answer.enums.AnswerStatus.class);
 
     public final NumberPath<Long> surveyId = createNumber("surveyId", Long.class);
 

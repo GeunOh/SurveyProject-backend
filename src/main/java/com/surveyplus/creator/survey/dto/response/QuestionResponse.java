@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Builder
@@ -17,4 +18,5 @@ public class QuestionResponse {
     private Integer order;
     private Boolean required;
     private List<ChoiceResponse> choices;
+    private Map<String, String> options;
 }

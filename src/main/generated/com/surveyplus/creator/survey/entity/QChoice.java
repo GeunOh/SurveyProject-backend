@@ -24,7 +24,7 @@ public class QChoice extends EntityPathBase<Choice> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final ListPath<ChoiceOption, QChoiceOption> options = this.<ChoiceOption, QChoiceOption>createList("options", ChoiceOption.class, QChoiceOption.class, PathInits.DIRECT2);
+    public final MapPath<String, String, StringPath> options = this.<String, String, StringPath>createMap("options", String.class, String.class, StringPath.class);
 
     public final NumberPath<Integer> order = createNumber("order", Integer.class);
 

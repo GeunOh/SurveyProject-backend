@@ -5,10 +5,11 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum SurveyAnswerType {
-    TEST("테스트형"),
-    BANNER("배너형"),
-    LIST("리스트형");
+public enum AnswerStatus {
+    PROGRESS("응답중"),
+    SCREEN("스크리닝 탈락"),
+    QUOTAOUT("정원마감으로 중단"),
+    END("완료");
 
     private final String description;
 }

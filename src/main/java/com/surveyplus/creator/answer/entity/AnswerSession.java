@@ -1,6 +1,7 @@
 package com.surveyplus.creator.answer.entity;
 
 import com.surveyplus.creator.answer.dto.response.SurveyStartResponse;
+import com.surveyplus.creator.answer.enums.AnswerStatus;
 import com.surveyplus.creator.answer.enums.SurveyAnswerType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -43,8 +44,9 @@ public class AnswerSession {
     private SurveyAnswerType surveyType;
 
     @Builder.Default
+    @Enumerated(EnumType.STRING)
     @Column(name = "response_status", length = 20)
-    private String status = "PROGRESS";
+    private AnswerStatus status = AnswerStatus.PROGRESS;
 
     @CreationTimestamp
     @Column(name = "started_at", nullable = false, updatable = false)
@@ -69,7 +71,19 @@ public class AnswerSession {
     }
     // 설문 최종 제출 시 상태 변경 메서드
     public void complete() {
-        this.status = "COMPLETED";
+        this.status = AnswerStatus.END;
+        this.endedAt = LocalDateTime.now();
+    }
+
+    // 분기 로직에 의해 응답 도중 스크리닝 탈락 처리된 세션을 표시
+    public void screen() {
+        this.status = AnswerStatus.SCREEN;
+        this.endedAt = LocalDateTime.now();
+    }
+
+    // 응답 도중 설문이 정원마감되어 더 이상 진행할 수 없게 된 세션을 표시
+    public void markQuotaOut() {
+        this.status = AnswerStatus.QUOTAOUT;
         this.endedAt = LocalDateTime.now();
     }
 }

@@ -1,6 +1,8 @@
 package com.surveyplus.creator.auth.service;
 
 import com.surveyplus.creator.global.jwt.TokenDto;
+import com.surveyplus.creator.global.jwt.TokenErrorCode;
+import com.surveyplus.creator.global.jwt.TokenException;
 import com.surveyplus.creator.global.jwt.TokenMemberInfo;
 import com.surveyplus.creator.global.jwt.TokenProvider;
 import com.surveyplus.creator.user.entity.Member;
@@ -30,7 +32,7 @@ public class AuthService {
         // 1. Refresh Token 유효성 검증
         if (!tokenProvider.validateToken(refreshToken)) {
             log.warn("유효하지 않거나 만료된 Refresh Token입니다.");
-            throw new IllegalArgumentException("유효하지 않은 Refresh Token입니다.");
+            throw new TokenException(TokenErrorCode.INVALID_TOKEN);
         }
 
         // 2. Refresh Token에서 Authentication 객체 추출
@@ -41,8 +43,14 @@ public class AuthService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
+        // 3-1. 로그아웃 등으로 무효화된 Refresh Token은 서명이 유효해도 거부
+        if (!refreshToken.equals(member.getRefreshToken())) {
+            log.warn("이미 무효화된 Refresh Token입니다. email={}", email);
+            throw new TokenException(TokenErrorCode.INVALID_TOKEN);
+        }
+
         // 💡 4. 새로운 Access Token만 단독 생성
-        String newAccessToken = tokenProvider.createAccessToken(authentication);
+        String newAccessToken = tokenProvider.createAccessToken(authentication, member.getId());
         long now = (new Date()).getTime();
         long accessTokenExpiresIn = now + (1000 * 60 * 30); // 30분
 

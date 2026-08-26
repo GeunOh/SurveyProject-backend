@@ -9,10 +9,11 @@ public class SurveyTimeCalculator {
 
         return switch (type) {
             case "A01" -> 20; // 단답형
-            case "A02" -> 60; // 장문형
+            case "A02" -> 40; // 장문형
             case "A03" -> 15; // 객관식(택1)
-            case "A04" -> 20; // 객관식(복수택)
-            case "A05" -> 10; // 별점형
+            case "A04" -> 30; // 객관식(복수택)
+            case "A05" -> 20; // 척도형
+            case "A06" -> 15; // 별점형
             default -> 30;
         };
     }

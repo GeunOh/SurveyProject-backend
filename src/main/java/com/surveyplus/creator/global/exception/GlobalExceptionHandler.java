@@ -74,7 +74,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(SurveyException.class)
-    public ResponseEntity<ApiResponse> handleSurveyException(MemberException e) {
+    public ResponseEntity<ApiResponse> handleSurveyException(SurveyException e) {
         log.error("Survey 에러: ", e);
 
         BaseErrorCode errorCode = e.getErrorCode();
@@ -85,7 +85,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AnswerException.class)
-    public ResponseEntity<ApiResponse> handleAnswerException(MemberException e) {
+    public ResponseEntity<ApiResponse> handleAnswerException(AnswerException e) {
         log.error("Answer 에러: ", e);
 
         BaseErrorCode errorCode = e.getErrorCode();
@@ -96,7 +96,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(QuestionException.class)
-    public ResponseEntity<ApiResponse> handleQuestionException(MemberException e) {
+    public ResponseEntity<ApiResponse> handleQuestionException(QuestionException e) {
         log.error("Question 에러: ", e);
 
         BaseErrorCode errorCode = e.getErrorCode();

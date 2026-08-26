@@ -39,7 +39,14 @@ public class Member {
     @Column(name = "provider_id")
     private String providerId;
 
+    @Column(name = "refresh_token", length = 500)
+    private String refreshToken;
+
     public void updatePassword(String encodedPassword) {
         this.password = encodedPassword;
+    }
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 }

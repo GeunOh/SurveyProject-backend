@@ -1,6 +1,7 @@
 package com.surveyplus.creator.survey.entity;
 
 import com.surveyplus.creator.answer.dto.response.SurveyIntroResponse;
+import com.surveyplus.creator.survey.dto.response.QuestionLogicResponse;
 import com.surveyplus.creator.survey.dto.response.SurveyOptionResponse;
 import com.surveyplus.creator.survey.dto.response.QuestionResponse;
 import com.surveyplus.creator.survey.dto.response.SurveyResponse;
@@ -59,16 +60,14 @@ public class Survey {
     private LocalDateTime deletedAt;
 
     @Builder.Default
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "survey_id")
+    @OneToMany(mappedBy = "survey", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Question> questions = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "survey_id")
+    @OneToMany(mappedBy = "survey", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SurveyOption> options = new ArrayList<>();
 
-    public SurveyResponse from() {
+    public SurveyResponse from(List<QuestionLogicResponse> logics) {
         List<QuestionResponse> questionResponses = this.questions.stream()
                 .map(Question::from)
                 .toList();
@@ -87,10 +86,11 @@ public class Survey {
                 .updatedAt(this.updatedAt)
                 .questions(questionResponses)
                 .options(optionResponses)
+                .logics(logics)
                 .build();
     }
 
-    public SurveyIntroResponse fromIntro(String answerId) {
+    public SurveyIntroResponse fromIntro(String answerId, boolean isTest, SurveyStatus statusOverride) {
         List<QuestionResponse> questionResponses = this.questions.stream()
                 .map(Question::from)
                 .toList();
@@ -100,9 +100,12 @@ public class Survey {
                 .toList();
 
         return SurveyIntroResponse.of(
+                this.id,
                 answerId,
                 this.title,
                 this.description,
+                statusOverride,
+                isTest,
                 questionResponses,
                 optionResponses
         );

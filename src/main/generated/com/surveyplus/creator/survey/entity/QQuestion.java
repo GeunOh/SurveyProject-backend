@@ -28,6 +28,8 @@ public class QQuestion extends EntityPathBase<Question> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final MapPath<String, String, StringPath> options = this.<String, String, StringPath>createMap("options", String.class, String.class, StringPath.class);
+
     public final NumberPath<Integer> order = createNumber("order", Integer.class);
 
     public final BooleanPath required = createBoolean("required");

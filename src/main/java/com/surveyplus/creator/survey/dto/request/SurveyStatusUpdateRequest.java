@@ -9,6 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SurveyStatusUpdateRequest {
-    private Long memberId;
     private SurveyStatus surveyStatus;
 }

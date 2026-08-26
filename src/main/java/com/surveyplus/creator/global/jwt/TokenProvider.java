@@ -10,7 +10,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -26,9 +25,11 @@ import java.util.stream.Collectors;
 public class TokenProvider {
 
     private static final String AUTHORITIES_KEY = "auth";
+    private static final String MEMBER_ID_KEY = "memberId";
     private static final String BEARER_TYPE = "Bearer";
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;            // 30분
-    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;  // 7일
+    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;  // 7일 (기본)
+    private static final long REFRESH_TOKEN_EXPIRE_TIME_REMEMBER = 1000L * 60 * 60 * 24 * 7; // 7일 (로그인 상태 유지)
 
     private final Key key;
 
@@ -38,7 +39,7 @@ public class TokenProvider {
     }
     
     //AccessToken, RefreshToken 생성
-    public TokenDto generateTokenDto(Authentication authentication, Member member) {
+    public TokenDto generateTokenDto(Authentication authentication, Member member, boolean rememberMe) {
 
         // 권한들 가져오기
         String authorities = authentication.getAuthorities().stream()
@@ -52,15 +53,18 @@ public class TokenProvider {
         String accessToken = Jwts.builder()
             .subject(authentication.getName())       // payload "sub": "name"
             .claim(AUTHORITIES_KEY, authorities)        // payload "auth": "ROLE_USER"
+            .claim(MEMBER_ID_KEY, member.getId())       // payload "memberId": 1 (ex)
             .expiration(accessTokenExpiresIn)        // payload "exp": 151621022 (ex)
             .signWith(key)    // header "alg": "HS512"
             .compact();
 
-        // Refresh Token 생성
+        // Refresh Token 생성 (로그인 상태 유지를 선택했으면 더 길게 만료)
+        long refreshTokenExpireTime = rememberMe ? REFRESH_TOKEN_EXPIRE_TIME_REMEMBER : REFRESH_TOKEN_EXPIRE_TIME;
         String refreshToken = Jwts.builder()
             .subject(authentication.getName())
             .claim(AUTHORITIES_KEY, authorities)
-            .expiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
+            .claim(MEMBER_ID_KEY, member.getId())
+            .expiration(new Date(now + refreshTokenExpireTime))
             .signWith(key)
             .compact();
 
@@ -79,7 +83,7 @@ public class TokenProvider {
             .build();
     }
 
-    public String createAccessToken(Authentication authentication) {
+    public String createAccessToken(Authentication authentication, Long memberId) {
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
@@ -90,6 +94,7 @@ public class TokenProvider {
         return Jwts.builder()
                 .subject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities)
+                .claim(MEMBER_ID_KEY, memberId)
                 .expiration(accessTokenExpiresIn)
                 .signWith(key)
                 .compact();
@@ -100,7 +105,7 @@ public class TokenProvider {
         // 토큰 복호화
         Claims claims = parseClaims(accessToken);
 
-        if (claims.get(AUTHORITIES_KEY) == null) {
+        if (claims.get(AUTHORITIES_KEY) == null || claims.get(MEMBER_ID_KEY) == null) {
             throw new TokenException(TokenErrorCode.INVALID_TOKEN);
         }
 
@@ -110,8 +115,10 @@ public class TokenProvider {
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
-        // UserDetails 객체를 만들어서 Authentication 리턴
-        UserDetails principal = new User(claims.getSubject(), "", authorities);
+        Long memberId = Long.valueOf(claims.get(MEMBER_ID_KEY).toString());
+
+        // memberId를 포함한 UserDetails 객체를 만들어서 Authentication 리턴
+        UserDetails principal = new CustomUserDetails(memberId, claims.getSubject(), authorities);
 
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }

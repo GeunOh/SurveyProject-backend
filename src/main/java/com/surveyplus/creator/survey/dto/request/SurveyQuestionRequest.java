@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Builder
@@ -35,6 +36,9 @@ public class SurveyQuestionRequest {
     @Valid
     private List<ChoiceRequest> choices;
 
+    // 질문별 부가 옵션 (글자수 제한, 보기 랜덤 정렬 등) - key/value, JSON 컬럼에 그대로 저장됨
+    private Map<String, String> options;
+
     public Question toEntity() {
         Question question = Question.builder()
                 .title(this.title)
@@ -43,6 +47,8 @@ public class SurveyQuestionRequest {
                 .order(this.order)
                 .required(this.required != null ? this.required : false)
                 .build();
+
+        question.updateOptions(this.options);
 
         if (this.choices != null) {
             List<Choice> choices = this.choices.stream()

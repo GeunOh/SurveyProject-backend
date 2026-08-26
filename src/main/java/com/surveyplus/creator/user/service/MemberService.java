@@ -52,6 +52,7 @@ public class MemberService {
         return MemberResponse.from(savedMember);
     }
 
+    @Transactional
     public TokenDto login(LoginRequest loginRequest) {
         // 1. 사용자 조회 (존재하지 않으면 예외 발생)
         Member member = memberRepository.findByEmail(loginRequest.getEmail())
@@ -68,16 +69,22 @@ public class MemberService {
                 Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"))
         );
 
-        // 3. JWT 토큰 발급
-        // 실제 운영 환경에서는 AccessToken과 RefreshToken을 함께 발급합니다.
-        TokenDto tokenDto = tokenProvider.generateTokenDto(authentication, member);
+        // 3. JWT 토큰 발급 (로그인 상태 유지 선택 시 리프레시 토큰을 더 길게 발급)
+        TokenDto tokenDto = tokenProvider.generateTokenDto(authentication, member, loginRequest.isRememberMe());
 
-        cookieUtil.createRefreshTokenCookie(tokenDto.getRefreshToken());
+        // 4. 재발급 시 검증/로그아웃 시 무효화할 수 있도록 리프레시 토큰을 회원 정보에 저장
+        member.updateRefreshToken(tokenDto.getRefreshToken());
+
+        cookieUtil.createRefreshTokenCookie(tokenDto.getRefreshToken(), loginRequest.isRememberMe());
 
         return tokenDto;
     }
 
-    public void logout() {
+    @Transactional
+    public void logout(String email) {
+        memberRepository.findByEmail(email)
+                .ifPresent(member -> member.updateRefreshToken(null));
+
         cookieUtil.deleteRefreshTokenCookie();
     }
 }

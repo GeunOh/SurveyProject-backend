@@ -21,18 +21,18 @@ public class AnswerController {
     private final AnswerService answerService;
 
 
-    @GetMapping("/intro/{surveyId}")
-    public ResponseEntity<?> getSurveyIntro(@PathVariable("surveyId") Long surveyId) {
-        log.info("설문 인트로 및 세션 생성 요청: surveyId={}", surveyId);
+    @GetMapping("/intro/{token}")
+    public ResponseEntity<?> getSurveyIntro(@PathVariable("token") String token) {
+        log.info("설문 인트로 및 세션 생성 요청: token={}", token);
 
-        SurveyIntroResponse surveyIntro = answerService.getSurveyIntroAndCreateRandomId(surveyId);
+        SurveyIntroResponse surveyIntro = answerService.getSurveyIntroAndCreateRandomId(token);
 
         return ResponseEntity.ok(ApiResponse.success(surveyIntro));
     }
 
     @PostMapping("/start")
     public ResponseEntity<?> startSurvey(@RequestBody SurveyStartRequest surveyStartReq) {
-        log.info("설문 응답 시작 요청: surveyId={}, randomId={}", surveyStartReq.getSurveyId(), surveyStartReq.getAnswerId());
+        log.info("설문 응답 시작 요청: randomId={}", surveyStartReq.getAnswerId());
 
         return ResponseEntity.ok(ApiResponse.success(answerService.startSurvey(surveyStartReq)));
     }

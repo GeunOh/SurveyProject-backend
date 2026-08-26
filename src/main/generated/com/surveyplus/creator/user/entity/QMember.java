@@ -33,6 +33,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath providerId = createString("providerId");
 
+    public final StringPath refreshToken = createString("refreshToken");
+
     public QMember(String variable) {
         super(Member.class, forVariable(variable));
     }

@@ -1,13 +1,11 @@
 package com.surveyplus.creator.survey.dto.request;
 
 import com.surveyplus.creator.survey.entity.Choice;
-import com.surveyplus.creator.survey.entity.ChoiceOption;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.util.List;
+import java.util.Map;
 
 @Getter
 @Builder
@@ -24,8 +22,8 @@ public class ChoiceRequest {
     @NotNull(message = "보기 순서는 필수입니다.")
     private Integer order;
 
-    @Valid
-    private List<ChoiceOptionRequest> options;
+    // 보기별 부가 옵션 (key/value) - JSON 컬럼에 그대로 저장됨
+    private Map<String, String> options;
 
     public Choice toEntity() {
         Choice choice = Choice.builder()
@@ -33,13 +31,7 @@ public class ChoiceRequest {
                 .order(this.order != null ? this.order : 0)
                 .build();
 
-        if (this.options != null) {
-            List<ChoiceOption> choiceOptions = this.options.stream()
-                    .map(ChoiceOptionRequest::toEntity)
-                    .peek(attr -> attr.assignChoice(choice))
-                    .toList();
-            choice.getOptions().addAll(choiceOptions);
-        }
+        choice.updateOptions(this.options);
 
         return choice;
     }

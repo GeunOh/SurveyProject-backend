@@ -2,6 +2,8 @@ package com.surveyplus.creator.auth.controller;
 
 import com.surveyplus.creator.auth.service.AuthService;
 import com.surveyplus.creator.global.exception.ApiResponse;
+import com.surveyplus.creator.global.jwt.TokenErrorCode;
+import com.surveyplus.creator.global.jwt.TokenException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +41,6 @@ public class AuthController {
                 }
             }
         }
-        throw new RuntimeException("Refresh Token이 존재하지 않습니다.");
+        throw new TokenException(TokenErrorCode.INVALID_TOKEN);
     }
 }

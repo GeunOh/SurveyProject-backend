@@ -7,4 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface SurveyQueryRepository {
     Page<SurveyListResponse> getSurveyList(SurveySearchCondition condition, Pageable pageable);
+
+    // 대시보드 통계용 - 회원이 소유한 설문들의 응답률 평균 (인원 제한 없는 설문은 0%로 계산에 포함)
+    double getAverageResponseRate(Long memberId);
 }

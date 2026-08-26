@@ -21,4 +21,5 @@ public class SurveyResponse {
     private LocalDateTime updatedAt;
     private List<QuestionResponse> questions;
     private List<SurveyOptionResponse> options;
+    private List<QuestionLogicResponse> logics;
 }
