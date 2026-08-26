@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleValidationException(MethodArgumentNotValidException e) {
         // 첫 번째 에러 메시지만 가져오거나, 모든 에러를 모아서 전달
         String message = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
-        log.error("valid 에러: ", message);
+        log.error("valid 에러: {}", message);
         return ResponseEntity.badRequest().body(new ApiResponse<Void>("VF", message, null));
     }
 

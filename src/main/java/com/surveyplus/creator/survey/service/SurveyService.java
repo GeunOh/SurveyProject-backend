@@ -82,11 +82,6 @@ public class SurveyService {
                 .build();
     }
 
-    // 홈 대시보드 응답 추이 (최근 N일간 일자별 완료 응답 수)
-    public List<ResponseTrendItem> getResponseTrend(Long memberId, int days) {
-        return answerService.getResponseTrend(memberId, days);
-    }
-
     // 통계 분석 - 특정 설문/테스트 데이터 포함 여부로 좁혀서 볼 수 있는 응답 추이
     public List<ResponseTrendItem> getResponseTrend(Long memberId, int days, Long surveyId, boolean includeTestData) {
         return answerService.getResponseTrend(memberId, days, surveyId, includeTestData);

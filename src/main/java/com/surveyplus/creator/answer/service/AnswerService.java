@@ -206,7 +206,7 @@ public class AnswerService {
     private String getActiveThemeColor(Survey survey) {
         return surveyOptionRepository.findBySurveyIdAndKeyAndIsActiveTrue(survey.getId(), SurveyOptionKey.THEME)
                 .map(SurveyOption::getValue)
-                .filter(value -> value != null && !value.isBlank())
+                .filter(value -> !value.isBlank())
                 .orElse("#7B4DFF");
     }
 
@@ -292,16 +292,6 @@ public class AnswerService {
     // 대시보드 통계용 - 회원이 소유한 모든 설문에 걸친 완료 응답 수 (테스트 응답 제외)
     public long countCompletedResponsesByMemberId(Long memberId) {
         return answerSessionRepository.countCompletedResponsesByMemberId(memberId, AnswerStatus.END, SurveyAnswerType.TEST);
-    }
-
-    // 홈 대시보드 응답 추이 - 최근 N일간 일자별 완료 응답 수 (테스트 응답 제외, 응답 없는 날짜는 0으로 채워서 반환)
-    public List<ResponseTrendItem> getResponseTrend(Long memberId, int days) {
-        return getResponseTrend(memberId, days, null, false);
-    }
-
-    // 통계 분석 - 특정 설문으로 좁혀서 볼 수 있는 버전 (surveyId가 null이면 회원의 전체 설문 기준, 테스트 응답 제외)
-    public List<ResponseTrendItem> getResponseTrend(Long memberId, int days, Long surveyId) {
-        return getResponseTrend(memberId, days, surveyId, false);
     }
 
     // 통계 분석 - 테스트 응답 포함 여부까지 선택할 수 있는 버전

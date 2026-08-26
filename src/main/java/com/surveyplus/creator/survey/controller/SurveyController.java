@@ -56,7 +56,7 @@ public class SurveyController {
     public ResponseEntity<?> getSurveyList(
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "status", required = false) SurveyStatus status,
-            @PageableDefault(size = 6, page = 0) Pageable pageable,
+            @PageableDefault(size = 6) Pageable pageable,
             @AuthenticationPrincipal CustomUserDetails principal
     ) {
         log.info("회원 ID {}의 설문 리스트 조회 요청", principal.getMemberId());
